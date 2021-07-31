@@ -83,7 +83,7 @@ func (c *Context) SendCommand(job *work.Job) error {
 	in := bufio.NewScanner(stdout)
 
 	for in.Scan() {
-		log.Printf(in.Text()) // write each line to your log, or anything you need
+		log.Printf(in.Text())
 	}
 	if err := in.Err(); err != nil {
 		log.Printf("error: %s", err)
