@@ -4,9 +4,6 @@ WORKDIR /src
 COPY *.go ./
 ENV CGO_ENABLED=0
 COPY go.* ./
-COPY controllers/ ./controllers
-COPY models/ ./models
-COPY repositories/ ./repositories
 RUN go mod download
 RUN go build -o /app
 # `skaffold debug` sets SKAFFOLD_GO_GCFLAGS to disable compiler optimizations

@@ -7,19 +7,19 @@ build:
       requires:
         - image: base
           alias: BASE
-    # - image: leeroy-app
-    #   context: leeroy-app
-    #   requires:
-    #     - image: base
-    #       alias: BASE
+    - image: worker
+      context: worker
+      requires:
+        - image: base
+          alias: BASE
     - image: base
       context: base
 deploy:
   kubectl:
     manifests:
-      - server/kubernetes/*
       - infra/kubernetes/*
-       #- leeroy-app/kubernetes/*
+      - server/kubernetes/*
+      - worker/kubernetes/*
 portForward:
 #   - resourceType: deployment
 #     resourceName: leeroy-web

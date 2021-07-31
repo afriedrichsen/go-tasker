@@ -1,10 +1,13 @@
 package models
 
 // ScheduledTask
-type ScheduledTask struct{}
+type ScheduledTask struct {
+	command string
+	url     string
+}
 
 // ScheduledTaskRepository ..
 type ScheduledTaskRepository interface {
-	FindByID(ID int) (*ScheduledTask, error)
+	FindByID(ID string) (*ScheduledTask, error)
 	Save(task *ScheduledTask) error
 }
