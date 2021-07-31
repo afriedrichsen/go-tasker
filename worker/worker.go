@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net/http"
+	"os/exec"
 
 	"github.com/gocraft/work"
 	"github.com/gomodule/redigo/redis"
@@ -62,8 +64,30 @@ func (c *Context) SendCommand(job *work.Job) error {
 		return err
 	}
 
-	// Go ahead and send the email...
-	// sendEmailTo(addr, subject)
+	// Run command
+	cmd := exec.Command("ping", "www.google.com")
+	// cmd.Stdout = os.Stdout
+	// cmd.Stderr = os.Stderr
+	// cmd.Run()
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return err
+	}
+
+	// start the command after having set up the pipe
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	// read command's stdout line by line
+	in := bufio.NewScanner(stdout)
+
+	for in.Scan() {
+		log.Printf(in.Text()) // write each line to your log, or anything you need
+	}
+	if err := in.Err(); err != nil {
+		log.Printf("error: %s", err)
+	}
 
 	return nil
 }
