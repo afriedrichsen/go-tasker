@@ -21,10 +21,10 @@ deploy:
       - server/kubernetes/*
       - worker/kubernetes/*
 portForward:
-#   - resourceType: deployment
-#     resourceName: leeroy-web
-#     port: 8080
-#     localPort: 9000
+  - resourceType: service
+    resourceName: redis-cart
+    port: 6379
+    localPort: 2113
   - resourceType: service
     resourceName: server
     port: http

@@ -31,7 +31,7 @@ func (c *BaseController) CreateScheduledTask(w http.ResponseWriter, r *http.Requ
 	new_task := &models.ScheduledTask{}
 	c.scheduledtask.Save(new_task)
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Category: %v\n", "Hello")
+	fmt.Fprintf(w, "Task Created: %v\n", "Task Created!")
 }
 
 func (c *BaseController) GetScheduledTasks(w http.ResponseWriter, r *http.Request) {

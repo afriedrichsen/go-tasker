@@ -26,7 +26,7 @@ func (r *ScheduledTaskRepo) FindByID(ID string) (*models.ScheduledTask, error) {
 // Save ..
 func (r *ScheduledTaskRepo) Save(user *models.ScheduledTask) error {
 	// Enqueue a job named "send_email" with the specified parameters.
-	_, err := r.enqueuer.Enqueue("send_email", work.Q{"address": "test@example.com", "subject": "hello world", "customer_id": 4})
+	_, err := r.enqueuer.Enqueue("run_command", work.Q{"command": "whoami", "subject": "hello world", "task_id": 4})
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
+	"os/signal"
 
 	"github.com/gocraft/work"
 	"github.com/gomodule/redigo/redis"
@@ -33,6 +35,23 @@ func (w *Worker) Initialize() {
 	pool := work.NewWorkerPool(Context{}, 10, "go_tasker", redisPool)
 	pool.Middleware((*Context).Log)
 	fmt.Println("Go Tasker - Worker READY!")
+
+	// Map the name of jobs to handler functions
+	pool.Job("send_email", (*Context).SendCommand)
+
+	// Customize options:
+	// pool.JobWithOptions("export", work.JobOptions{Priority: 10, MaxFails: 1}, (*Context).Export)
+
+	// Start processing jobs
+	pool.Start()
+
+	// Wait for a signal to quit:
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt, os.Kill)
+	<-signalChan
+
+	// Stop the pool
+	pool.Stop()
 }
 
 func (w *Worker) Run(addr string) {
@@ -42,30 +61,32 @@ func (w *Worker) Run(addr string) {
 func (c *Context) Log(job *work.Job, next work.NextMiddlewareFunc) error {
 	fmt.Println("Starting job: ", job.Name)
 	return next()
+	// return nil
 }
 
-func (c *Context) FindTask(job *work.Job, next work.NextMiddlewareFunc) error {
-	// If there's a task_id param, set it in the context for future middleware and handlers to use.
-	if _, ok := job.Args["task_id"]; ok {
-		c.taskID = job.ArgString("task_id")
-		if err := job.ArgError(); err != nil {
-			return err
-		}
-	}
+// func (c *Context) FindTask(job *work.Job, next work.NextMiddlewareFunc) error {
+// 	// If there's a task_id param, set it in the context for future middleware and handlers to use.
+// 	if _, ok := job.Args["task_id"]; ok {
+// 		c.taskID = job.ArgString("task_id")
+// 		if err := job.ArgError(); err != nil {
+// 			return err
+// 		}
+// 	}
 
-	return next()
-}
+// 	return next()
+// }
 
+// SendCommand sends our command (or, more generally, runs a command in a child process, but pretend it's running remote)
 func (c *Context) SendCommand(job *work.Job) error {
 	// Extract arguments:
-	// addr := job.ArgString("address")
+	command := job.ArgString("command")
 	// subject := job.ArgString("subject")
 	if err := job.ArgError(); err != nil {
 		return err
 	}
 
 	// Run command
-	cmd := exec.Command("ping", "www.google.com")
+	cmd := exec.Command(command)
 	// cmd.Stdout = os.Stdout
 	// cmd.Stderr = os.Stderr
 	// cmd.Run()
