@@ -37,7 +37,7 @@ func (w *Worker) Initialize() {
 	fmt.Println("Go Tasker - Worker READY!")
 
 	// Map the name of jobs to handler functions
-	pool.Job("send_email", (*Context).SendCommand)
+	pool.Job("send_command", (*Context).SendCommand)
 
 	// Customize options:
 	// pool.JobWithOptions("export", work.JobOptions{Priority: 10, MaxFails: 1}, (*Context).Export)
