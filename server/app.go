@@ -43,12 +43,12 @@ func (a *App) Initialize() {
 
 func (a *App) initializeRoutes(repo *repositories.ScheduledTaskRepo) {
 	c := controllers.NewBaseController(repo)
-	a.Router.HandleFunc("/", c.HomeHandler)
-	a.Router.HandleFunc("/task", c.GetScheduledTask)
-	a.Router.HandleFunc("/task/create", c.CreateScheduledTask)
-	a.Router.HandleFunc("/task/:id", c.GetScheduledTask)
-	a.Router.HandleFunc("/task/update", c.UpdateScheduledTask)
-	a.Router.HandleFunc("/task/delete", c.DeleteScheduledTask)
+	a.Router.HandleFunc("/", c.HomeHandler).Methods("GET")
+	a.Router.HandleFunc("/task", c.GetScheduledTask).Methods("GET")
+	a.Router.HandleFunc("/task/create", c.CreateScheduledTask).Methods("POST")
+	a.Router.HandleFunc("/task/:id", c.GetScheduledTask).Methods("GET")
+	a.Router.HandleFunc("/task/update", c.UpdateScheduledTask).Methods("PATCH")
+	a.Router.HandleFunc("/task/delete", c.DeleteScheduledTask).Methods("POST", "DELETE")
 	fmt.Println("Go Tasker - Routes initialized!")
 
 }
